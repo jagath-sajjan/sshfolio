@@ -21,7 +21,7 @@ func main() {
 	fmt.Println("Listening on port", port)
 
 	for {
-		conn, err := listener.Accpet()
+		conn, err := listener.Accept()
 		if err != nil {
 			continue
 		}
