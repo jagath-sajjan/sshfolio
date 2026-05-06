@@ -15,11 +15,8 @@ func Execute(cmd string) string {
 		return `
 help
 ls
-cat about.txt
-cat projects.txt
-cat skills.txt
-cat contact.txt
-pwd
+cat 
+pwd <file_name>
 whoami
 neofetch
 sudo hire-me
