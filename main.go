@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -13,20 +14,20 @@ import (
 	lm "github.com/charmbracelet/wish/logging"
 )
 
-type model strcut {
-	cursor int
+type model struct {
+	cursor  int
 	choices []string
 }
 
 var titleStyle = lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("86")).
-		BorderStyle(lipgloss.RoundedBorder()).
-		Padding(1, 2)
+	Bold(true).
+	Foreground(lipgloss.Color("86")).
+	BorderStyle(lipgloss.RoundedBorder()).
+	Padding(1, 2)
 
 var selectedStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("205")).
-		Bold(true)
+	Foreground(lipgloss.Color("205")).
+	Bold(true)
 
 func initialModel() model {
 	return model{
@@ -34,7 +35,7 @@ func initialModel() model {
 			"About",
 			"Projects",
 			"Skills",
-			"Github",
+			"GitHub",
 			"Contact",
 			"Exit",
 		},
@@ -47,28 +48,28 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	
+
 	case tea.KeyMsg:
 		switch msg.String() {
 
 		case "ctrl+c", "q":
-				return m, tea.Quit
+			return m, tea.Quit
 
 		case "up", "k":
-				if m.cursor > 0 {
-						m.cursor
+			if m.cursor > 0 {
+				m.cursor--
 			}
 
 		case "down", "j":
-				if m.cursor < len(m.choices)-1 {
-						m.cursor++
+			if m.cursor < len(m.choices)-1 {
+				m.cursor++
 			}
 
 		case "enter":
-				selected := m.choices[m.cursor]
+			selected := m.choices[m.cursor]
 
-				if selected == "Exit" {
-						return m, tea.Quit
+			if selected == "Exit" {
+				return m, tea.Quit
 			}
 		}
 	}
@@ -77,7 +78,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := titleStyle.Render("Jogo's sshStation")
+
+	s := titleStyle.Render("JOGO SSH PORTFOLIO")
 	s += "\n\n"
 
 	for i, choice := range m.choices {
@@ -85,8 +87,8 @@ func (m model) View() string {
 		cursor := " "
 
 		if m.cursor == i {
-				cursor = ">"
-				s += selectedStyle.Render(fmt.Sprintf("%s %s\n", cursor, choice))
+			cursor = ">"
+			s += selectedStyle.Render(fmt.Sprintf("%s %s\n", cursor, choice))
 		} else {
 			s += fmt.Sprintf("%s %s\n", cursor, choice)
 		}
@@ -110,9 +112,19 @@ func main() {
 		port = "22097"
 	}
 
+	if _, err := os.Stat("/tmp/id_ed25519"); os.IsNotExist(err) {
+		cmd := exec.Command(
+			"ssh-keygen",
+			"-t", "ed25519",
+			"-f", "/tmp/id_ed25519",
+			"-N", "",
+		)
+		cmd.Run()
+	}
+
 	server, err := wish.NewServer(
 		wish.WithAddress("0.0.0.0:"+port),
-		wish.WithHostKeyPath(".ssh/id_ed25519"),
+		wish.WithHostKeyPath("/tmp/id_ed25519"),
 		wish.WithNoClientAuth(),
 		wish.WithMiddleware(
 			bm.Middleware(teaHandler),
