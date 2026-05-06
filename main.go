@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -48,10 +47,8 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-
 	case tea.KeyMsg:
 		switch msg.String() {
-
 		case "ctrl+c", "q":
 			return m, tea.Quit
 
@@ -66,9 +63,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "enter":
-			selected := m.choices[m.cursor]
-
-			if selected == "Exit" {
+			if m.choices[m.cursor] == "Exit" {
 				return m, tea.Quit
 			}
 		}
@@ -78,24 +73,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-
 	s := titleStyle.Render("JOGO SSH PORTFOLIO")
 	s += "\n\n"
 
 	for i, choice := range m.choices {
-
-		cursor := " "
-
 		if m.cursor == i {
-			cursor = ">"
-			s += selectedStyle.Render(fmt.Sprintf("%s %s\n", cursor, choice))
+			s += selectedStyle.Render(fmt.Sprintf("> %s\n", choice))
 		} else {
-			s += fmt.Sprintf("%s %s\n", cursor, choice)
+			s += fmt.Sprintf("  %s\n", choice)
 		}
 	}
 
-	s += "\n↑ ↓ navigate • enter select • q quit"
-
+	s += "\n↑ ↓ navigate • Enter select • q quit"
 	return s
 }
 
@@ -106,26 +95,19 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 }
 
 func main() {
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "22097"
 	}
 
-	if _, err := os.Stat("/tmp/id_ed25519"); os.IsNotExist(err) {
-		cmd := exec.Command(
-			"ssh-keygen",
-			"-t", "ed25519",
-			"-f", "/tmp/id_ed25519",
-			"-N", "",
-		)
-		cmd.Run()
-	}
-
 	server, err := wish.NewServer(
 		wish.WithAddress("0.0.0.0:"+port),
-		wish.WithHostKeyPath("/tmp/id_ed25519"),
-		wish.WithNoClientAuth(),
+		wish.WithHostKeyPath(".ssh/id_ed25519"),
+
+		wish.WithPasswordAuth(func(ctx ssh.Context, password string) bool {
+			return true
+		}),
+
 		wish.WithMiddleware(
 			bm.Middleware(teaHandler),
 			lm.Middleware(),
@@ -136,11 +118,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Println("Starting SSH server on port", port)
+	log.Println("Starting SSH TUI server on port", port)
 
-	err = server.ListenAndServe()
-
-	if err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatalln(err)
 	}
 }
