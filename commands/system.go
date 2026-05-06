@@ -56,7 +56,21 @@ func PWD() string {
 
 func Weather() string {
 
-	resp, err := http.Get("https://wttr.in/Bengaluru?format=v2")
+	client := &http.Client{}
+
+	req, err := http.NewRequest(
+		"GET",
+		"https://wttr.in/Bengaluru?format=v2",
+		nil,
+	)
+
+	if err != nil {
+		return "failed to create request"
+	}
+
+	req.Header.Set("User-Agent", "curl")
+
+	resp, err := client.Do(req)
 
 	if err != nil {
 		return "failed to fetch weather"
