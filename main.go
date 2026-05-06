@@ -17,15 +17,32 @@ import (
 )
 
 var (
+	pink       = lipgloss.Color("212")
+	lightPink  = lipgloss.Color("218")
+	hotPink    = lipgloss.Color("205")
+	white      = lipgloss.Color("255")
+	darkPink   = lipgloss.Color("168")
+
+	bannerStyle = lipgloss.NewStyle().
+			Foreground(hotPink).
+			Bold(true)
+
 	promptStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("86")).
+			Foreground(pink).
 			Bold(true)
 
 	outputStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("252"))
+			Foreground(white)
 
 	errorStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("196")).
+			Bold(true)
+
+	inputStyle = lipgloss.NewStyle().
+			Foreground(lightPink)
+
+	headerStyle = lipgloss.NewStyle().
+			Foreground(darkPink).
 			Bold(true)
 )
 
@@ -35,24 +52,28 @@ type model struct {
 }
 
 func initialModel() model {
+
 	ti := textinput.New()
 
 	ti.Placeholder = "type a command..."
 	ti.Focus()
 	ti.CharLimit = 256
-	ti.Width = 50
+	ti.Width = 60
+	ti.Prompt = ""
+	ti.TextStyle = inputStyle
+	ti.Cursor.Style = lipgloss.NewStyle().Foreground(hotPink)
 
 	history := []string{
 		"",
-		"██╗ ██████╗  ██████╗  ██████╗ ",
-		"██║██╔═══██╗██╔════╝ ██╔═══██╗",
-		"██║██║   ██║██║  ███╗██║   ██║",
-		"██║██║   ██║██║   ██║██║   ██║",
-		"██║╚██████╔╝╚██████╔╝╚██████╔╝",
-		"╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ",
+		bannerStyle.Render("     ██╗ ██████╗  ██████╗  ██████╗ "),
+		bannerStyle.Render("     ██║██╔═══██╗██╔════╝ ██╔═══██╗"),
+		bannerStyle.Render("     ██║██║   ██║██║  ███╗██║   ██║"),
+		bannerStyle.Render("██   ██║██║   ██║██║   ██║██║   ██║"),
+		bannerStyle.Render("╚█████╔╝╚██████╔╝╚██████╔╝╚██████╔╝"),
+		bannerStyle.Render(" ╚════╝  ╚═════╝  ╚═════╝  ╚═════╝ "),
 		"",
-		"Welcome to JogoOS v1.0",
-		"Type 'help' to begin.",
+		headerStyle.Render("Welcome to JogoOS v1.0"),
+		outputStyle.Render("Type 'help' to begin."),
 		"",
 	}
 
@@ -63,10 +84,11 @@ func initialModel() model {
 }
 
 func (m model) Init() tea.Cmd {
-	return textinput.Blink
+	return nil
 }
 
 func runCommand(cmd string) string {
+
 	cmd = strings.TrimSpace(strings.ToLower(cmd))
 
 	switch cmd {
@@ -189,6 +211,7 @@ Shell: sshfolio
 Terminal: Bubble Tea
 Location: Bengaluru
 Edition: The Jogo Gazette
+Theme: Pink Noir
 `
 
 	case "clear":
@@ -204,6 +227,7 @@ Edition: The Jogo Gazette
 		return "command not found: " + cmd
 	}
 }
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
@@ -227,17 +251,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			result := runCommand(cmd)
 
 			if result == "__CLEAR__" {
+
 				m.history = []string{}
+
 			} else if result == "__EXIT__" {
+
 				return m, tea.Quit
+
 			} else if result != "" {
 
 				if strings.HasPrefix(result, "command not found") {
+
 					m.history = append(
 						m.history,
 						errorStyle.Render(result),
 					)
+
 				} else {
+
 					m.history = append(
 						m.history,
 						outputStyle.Render(result),
@@ -250,6 +281,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	var cmd tea.Cmd
+
 	m.input, cmd = m.input.Update(msg)
 
 	return m, cmd
@@ -257,7 +289,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 
-	content := strings.Join(m.history, "\n")
+	start := 0
+
+	if len(m.history) > 25 {
+		start = len(m.history) - 25
+	}
+
+	content := strings.Join(m.history[start:], "\n")
 
 	return fmt.Sprintf(
 		"%s\n\n%s %s",
@@ -268,20 +306,22 @@ func (m model) View() string {
 }
 
 func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
-	return initialModel(), []tea.ProgramOption{
-		tea.WithAltScreen(),
-	}
+
+	return initialModel(), []tea.ProgramOption{}
 }
 
 func main() {
 
 	port := os.Getenv("PORT")
+
 	if port == "" {
 		port = "22097"
 	}
 
 	server, err := wish.NewServer(
+
 		wish.WithAddress("0.0.0.0:"+port),
+
 		wish.WithHostKeyPath(".ssh/id_ed25519"),
 
 		wish.WithPasswordAuth(func(ctx ssh.Context, password string) bool {
