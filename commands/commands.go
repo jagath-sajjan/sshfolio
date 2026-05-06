@@ -15,6 +15,7 @@ func Execute(cmd string) string {
 		return `
 help
 ls
+weather
 cat 
 pwd <file_name>
 whoami
@@ -56,6 +57,9 @@ contact.txt
 
 	case "pwd":
 		return PWD()
+
+	case "weather":
+	  return Weather()
 
 	case "whoami":
 		return Whoami()
