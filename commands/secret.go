@@ -10,11 +10,11 @@ func HireMe() string {
 [0m
 
 Candidate: Jagath Sajjan
-Status: AVAILABLE FOR HIRE
+Status: Studying B.Tech Cyber @DSU Bengaluru
 
 Specializations:
-• Software Development
-• UI/UX
+• Red Teamer
+• Backend
 • Systems
 • Community Infrastructure
 
@@ -39,7 +39,7 @@ func Matrix() string {
 1101010101010101010101010101010101
 
 SYSTEM OVERRIDE ACTIVE
-WELCOME TO JogoOS
+WELCOME TO JagathOS
 [0m
 `
 }

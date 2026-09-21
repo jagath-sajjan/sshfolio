@@ -2,9 +2,9 @@ package commands
 
 import (
 	"fmt"
-	"time"
 	"io"
 	"net/http"
+	"time"
 )
 
 func Neofetch() string {
@@ -20,38 +20,37 @@ func Neofetch() string {
 	currentTime := now.Format("03:04:05 PM IST")
 
 	return fmt.Sprintf(`
- [38;5;205m
-        ██╗ ██████╗  ██████╗  ██████╗
-        ██║██╔═══██╗██╔════╝ ██╔═══██╗
-        ██║██║   ██║██║  ███╗██║   ██║
-   ██   ██║██║   ██║██║   ██║██║   ██║
-   ╚█████╔╝╚██████╔╝╚██████╔╝╚██████╔╝
-    ╚════╝  ╚═════╝  ╚═════╝  ╚═════╝
- [0m
- [38;5;205mjogo [0m@ [38;5;218mportfolio [0m
-──────────────────────────────
+[38;5;205m     ██╗ █████╗  ██████╗  █████╗ ████████╗██╗  ██╗[0m
+[38;5;205m     ██║██╔══██╗██╔════╝ ██╔══██╗╚══██╔══╝██║  ██║[0m
+[38;5;205m     ██║███████║██║  ███╗███████║   ██║   ███████║[0m
+[38;5;205m██   ██║██╔══██║██║   ██║██╔══██║   ██║   ██╔══██║[0m
+[38;5;205m╚█████╔╝██║  ██║╚██████╔╝██║  ██║   ██║   ██║  ██║[0m
+[38;5;205m ╚════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝[0m
 
- [38;5;205mOS [0m:         JogoOS v1.0
- [38;5;205mHost [0m:       Railway TCP Edge
- [38;5;205mKernel [0m:     sshfolio
- [38;5;205mUptime [0m:     forever
- [38;5;205mShell [0m:      jogo-shell
- [38;5;205mTerminal [0m:   SSH
- [38;5;205mTheme [0m:      Pink Noir
- [38;5;205mLocation [0m:   Bengaluru
- [38;5;205mDeveloper [0m:  Jagath Sajjan
- [38;5;205mTime [0m:       %s
+[38;5;205mjagath[0m@[38;5;218mportfolio[0m
+──────────────────────────────────────────────────────
 
- [38;5;205m███ [0m  [38;5;212m███ [0m  [38;5;218m███ [0m  [38;5;225m███ [0m
+[38;5;205mOS[0m:          JagathOS v1.0
+[38;5;205mHost[0m:        bore.pub TCP Edge
+[38;5;205mKernel[0m:      sshfolio
+[38;5;205mUptime[0m:      forever
+[38;5;205mShell[0m:       jagath-shell
+[38;5;205mTerminal[0m:    SSH
+[38;5;205mTheme[0m:       Pink Noir
+[38;5;205mLocation[0m:    Bengaluru
+[38;5;205mDeveloper[0m:   Jagath Sajjan
+[38;5;205mTime[0m:        %s
+
+[38;5;205m███[0m  [38;5;212m███[0m  [38;5;218m███[0m  [38;5;225m███[0m
 `, currentTime)
 }
 
 func Whoami() string {
-	return "jogo"
+	return "jagath"
 }
 
 func PWD() string {
-	return "/home/jogo"
+	return "/home/jagath"
 }
 
 func Weather() string {

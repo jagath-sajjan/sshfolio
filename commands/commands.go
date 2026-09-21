@@ -59,7 +59,7 @@ contact.txt
 		return PWD()
 
 	case "weather":
-	  return Weather()
+		return Weather()
 
 	case "whoami":
 		return Whoami()

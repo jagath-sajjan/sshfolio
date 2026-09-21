@@ -3,18 +3,18 @@ package ui
 const (
 	Reset = "\033[0m"
 
-	Pink = "\033[38;5;205m"
+	Pink      = "\033[38;5;205m"
 	LightPink = "\033[38;5;218m"
-	DarkPink = "\033[38;5;168m"
+	DarkPink  = "\033[38;5;168m"
 
 	White = "\033[97m"
-	Red = "\033[31m"
+	Red   = "\033[31m"
 
 	Bold = "\033[1m"
 )
 
 func Prompt() string {
-	return Pink + Bold + "jogo@portfolio:~$ " + Reset
+	return Pink + Bold + "jagath@portfolio:~$ " + Reset
 }
 
 func ErrorText(text string) string {

@@ -106,7 +106,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Println("JogoOS SSH running on port", port)
+	log.Println("JagathOS SSH running on port", port)
 
 	err = server.ListenAndServe()
 
