@@ -1,0 +1,14 @@
+name: sshfolio
+services:
+  - name: sshfolio
+    type: web
+    docker:
+      dockerfile: Dockerfile
+    ports:
+      - port: 22097
+        protocol: tcp
+    env:
+      - key: PORT
+        value: "22097"
+    routes:
+      - port: 22097
